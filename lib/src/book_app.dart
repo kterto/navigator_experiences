@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:navigator_experiences/src/models/book.dart';
-import 'package:navigator_experiences/src/pages/book_details_screen.dart';
-import 'package:navigator_experiences/src/pages/books_list_screen.dart';
+import 'package:navigator_experiences/src/router/book_route_information_parser.dart';
+import 'package:navigator_experiences/src/router/book_router_delegate.dart';
 
 class BooksApp extends StatefulWidget {
   const BooksApp({super.key});
@@ -11,14 +10,9 @@ class BooksApp extends StatefulWidget {
 }
 
 class _BooksAppState extends State<BooksApp> {
-  // New:
-  Book? _selectedBook;
-  bool show404 = false;
-  List<Book> books = [
-    Book('Left Hand of Darkness', 'Ursula K. Le Guin'),
-    Book('Too Like the Lightning', 'Ada Palmer'),
-    Book('Kindred', 'Octavia E. Butler'),
-  ];
+  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
+  final BookRouteInformationParser _routeInformationParser =
+      BookRouteInformationParser();
 
   @override
   void initState() {
@@ -27,44 +21,10 @@ class _BooksAppState extends State<BooksApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Books App',
-      home: Navigator(
-        pages: [
-          MaterialPage(
-            key: const ValueKey('BooksListPage'),
-            child: BooksListScreen(
-              books: books,
-              onTapped: _handleBookTapped,
-            ),
-          ),
-          if (_selectedBook != null)
-            MaterialPage(
-              key: ValueKey(_selectedBook),
-              child: BookDetailsScreen(
-                book: _selectedBook!,
-              ),
-            ),
-        ],
-        onPopPage: (route, result) {
-          if (!route.didPop(result)) {
-            return false;
-          }
-
-          // Update the list of pages by setting _selectedBook to null
-          setState(() {
-            _selectedBook = null;
-          });
-
-          return true;
-        },
-      ),
+      routerDelegate: _routerDelegate,
+      routeInformationParser: _routeInformationParser,
     );
-  }
-
-  void _handleBookTapped(Book book) {
-    setState(() {
-      _selectedBook = book;
-    });
   }
 }
