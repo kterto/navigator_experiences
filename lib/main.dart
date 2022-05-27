@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:navigator_experiences/posts/posts_page.dart';
+import 'package:navigator_experiences/routes/router.gr.dart';
 
-void main() => runApp(const AppWidget());
+void main() => runApp(AppWidget());
 
 class AppWidget extends StatelessWidget {
-  const AppWidget({Key? key}) : super(key: key);
+  AppWidget({Key? key}) : super(key: key);
+
+  final AppRouter _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Bottom Nav Bar with Nested Routing',
-      home: PostsPage(),
+    return MaterialApp.router(
+      routeInformationParser: _appRouter.defaultRouteParser(),
+      routerDelegate: _appRouter.delegate(),
     );
   }
 }
